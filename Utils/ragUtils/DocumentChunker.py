@@ -10,7 +10,7 @@ class DocumentChunker:
 
     def __main__(self):
         sample_text = "This is a sample text to demonstrate the chunking functionality. " * 100
-        chunks = self._chunk_text(sample_text)
+        chunks = self.chunk_text(sample_text)
         for i, chunk in enumerate(chunks):
             print(f"Chunk {i+1}:\n{chunk}\n")
 
@@ -23,10 +23,10 @@ class DocumentChunker:
             else:
                 with open(doc, 'r', encoding='utf-8') as file:
                     text = file.read()
-            chunks.append(self._chunk_text(text))
+            chunks.append(self.chunk_text(text))
         return chunks
     
-    def _chunk_text(self, text: str) -> list[str]:
+    def chunk_text(self, text: str) -> list[str]:
         chunks = []
         start = 0
         text_length = len(text)
