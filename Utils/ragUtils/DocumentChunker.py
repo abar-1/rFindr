@@ -26,6 +26,20 @@ class DocumentChunker:
             chunks.append(self.chunk_text(text))
         return chunks
     
+    def chunk_documents_paragraphs(self, document_paths: list[str]) -> list[str]:
+        chunks = []
+        for doc in document_paths:
+            if doc.lower().endswith('.pdf'):
+                text = self._getTextFromPDF(doc)
+            else:
+                with open(doc, 'r', encoding='utf-8') as file:
+                    text = file.read()
+            paragraphs = text.split('\n\n')
+            for para in paragraphs:
+                para_chunks = self.chunk_text(para)
+                chunks.extend(para_chunks)
+        return chunks
+    
     def chunk_text(self, text: str) -> list[str]:
         chunks = []
         start = 0
