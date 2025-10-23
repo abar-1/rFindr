@@ -61,6 +61,5 @@ embeddings = embedGenerator.generate_Embeddings(chunks)
 for chunk, embedding in zip(chunks, embeddings):
     uploadEmbeddingToVDB(makeJSONPayload(name = name,email=email, embeddings=embeddings))
 
-
  
 
