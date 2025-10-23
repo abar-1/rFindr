@@ -1,10 +1,12 @@
+import supabase
+from ragUtils import GenerateEmbeddings
 from ragUtils import ScrapeProfs
-from ragUtils import DocumentChunker, GenerateEmbeddings
+from ragUtils import DocumentChunker
 import supabase
 import json
 from supabase import create_client, Client
 import os
-
+print("imports done")
 DATABASE_URL = os.getenv("DATABASE_URL")
 SUPABASE_PUBLIC = os.getenv("SUPABASE_PUBLIC")
 
@@ -12,7 +14,7 @@ VDB_API_URL = DATABASE_URL
 VDB_ANON_KEY = SUPABASE_PUBLIC
 
 docChunker = DocumentChunker.DocumentChunker(chunk_token_size=500, overlap=100)
-embedGenerator = GenerateEmbeddings.EmbeddingGenerator()
+
 
 def makeJSONPayload(name : str, email: str, embeddings: list[float]) -> dict:
     profName = name
@@ -59,11 +61,12 @@ def chunkDocuments(docPaths: list[str]) -> list[str]:
 url = "https://www.cs.purdue.edu/people/faculty/aliaga.html"
 name, email, details = ScrapeProfs.get_professor_info(url)
 print(f"Scraped professor: {name}, Email: {email}")
+
 chunks = []
 #chunks = chunkDocuments(docPaths)
 #chunks = chunkPlainText(details)
 
-embeddings = embedGenerator.generate_Embeddings(details)
+embeddings = GenerateEmbeddings.generate_Embedding(details)
 print(f"Generated {len(embeddings)} embeddings for professor {name}.")
 
 # for chunk, embedding in zip(chunks, embeddings):
