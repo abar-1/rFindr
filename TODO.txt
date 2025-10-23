@@ -1,2 +1,2 @@
-
-- 
+- Scrape all Profs page for other website links
+- Add all to DBs
