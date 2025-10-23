@@ -1,3 +1,2 @@
-- Make Prof_embed DB
-- Uplaod Profs to Prof DB and Prof_embed DB
+
 - 
