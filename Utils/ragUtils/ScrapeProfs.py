@@ -258,8 +258,8 @@ def get_professor_info(url: str) -> Tuple[str, str, str]:
     name = record.name or "N/A"
     emails_str = "; ".join(record.emails) if record.emails else "N/A"
 
-    bio_md = f"**Biography:**\n\n{record.information or 'N/A'}\n"
-    pubs_md = "**Publications:**\n" + "\n".join([f"- {p}" for p in record.publications]) if record.publications else "**Publications:**\nN/A"
+    bio_md = f"\n\n{record.information or 'N/A'}\n"
+    pubs_md = "\n" + "\n".join([f" {p}" for p in record.publications]) if record.publications else "\nN/A"
 
     return name, emails_str, bio_md + "\n\n" + pubs_md
 

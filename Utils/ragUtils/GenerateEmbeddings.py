@@ -16,3 +16,6 @@ def generate_Embedding(text: str) -> list[float]:
 def writeEmbeddingsToFile(embeddings: list[list[float]], file_path: str):
     with open(file_path, 'w') as f:
         json.dump(embeddings, f)
+
+
+
