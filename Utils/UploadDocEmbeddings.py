@@ -4,8 +4,8 @@ import supabase
 import json
 from supabase import create_client, Client
 
-VDB_API_URL = ""
-VDB_ANON_KEY = ""
+VDB_API_URL = DATABASE_URL
+VDB_ANON_KEY = SUPABASE_PUBLIC
 
 docChunker = DocumentChunker.DocumentChunker(chunk_token_size=500, overlap=100)
 embedGenerator = GenerateEmbeddings.EmbeddingGenerator()
@@ -29,13 +29,16 @@ def uploadEmbeddingToVDB(JSONPayload: dict):
     try:
         JSON_data = json.dumps(JSON_data, ensure_ascii=False, indent=2)
         #Edit this to match VDB structure
-        client.storage.from_('embeddings').upload(
-            path = 'embeddings.json', 
-            file = JSON_data.encode('utf-8'),
-            file_options={"content-type": "application/json"}            
-            )
-        
-        print("Successfully uploaded embeddings to VDB.")
+        response = (
+            client.table('professor_embeddings')
+            .insert(JSON_data.embeddings)
+            .execute()
+        )
+
+        if response.data:
+            print("Successfully uploaded embeddings to VDB.")
+        else:
+            print("Failed to upload embeddings to VDB.")
     
     except Exception as e:
         print(f"Error uploading embeddings: {e}")

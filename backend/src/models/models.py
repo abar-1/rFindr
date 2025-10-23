@@ -24,10 +24,8 @@ class User(Base):
 class UserEmbedding(Base):
     __tablename__ = "user_embeddings"
 
-    id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"))
     embedding = Column(ARRAY(Float), nullable=False)
-    interests = Column(String, index=True)
 
     user = relationship("User", back_populates="embeddings")
 
@@ -50,10 +48,8 @@ class Professor(Base):
 class ProfessorEmbedding(Base):
     __tablename__ = "professor_embeddings"
 
-    id = Column(Integer, primary_key=True, index=True)
     professor_id = Column(Integer, ForeignKey("professors.id"))
     embedding = Column(ARRAY(Float), nullable=False)
-    research_areas = Column(String, index=True)
 
     professor = relationship("Professor", back_populates="embeddings")
 
@@ -67,5 +63,4 @@ class ChatLog(Base):
     query = Column(String, nullable=False)
     timestamp = Column(DateTime, default=datetime.utcnow)
     matched_professors = Column(ARRAY(Integer))  # store matched professor IDs
-
     user = relationship("User", back_populates="chatlogs")
