@@ -22,6 +22,7 @@ class SupabaseAPI:
             return "case = 0, set case = 1 to run example."
     
 # ============ UPLOAD EMBEDDINGS TO DB ============= #
+# Uses Supabase client to upload info to the database
     def upload_embedding(self, url: str):
         self.__get_Prof_Names()
         if not url:
@@ -66,6 +67,7 @@ class SupabaseAPI:
         self.supabase.table("professor_embeddings").insert({"professor_id": professor_id, "embedding": embedding, "chunk": chunk}).execute()
 
 # ============ Get Data From DB ============= #
+#Uses Request to call Supabase functions
     def rag_Search(self, embedding: list[float], match_count: int = 5) -> list[dict]:
         results = self.__get_DB_Vectors(embedding)
         if len(results) < match_count:
@@ -77,7 +79,7 @@ class SupabaseAPI:
         SUPABASE_URL = os.getenv("DATABASE_URL")
         SUPABASE_KEY = os.getenv("SUPABASE_PUBLIC")
 
-        endpoint = f"{SUPABASE_URL}/rest/v1/rpc/top_professor_matches"
+        endpoint = f"{SUPABASE_URL}/rest/v1/rpc/top_professor_matches" #top_professor_matches = function name in supabase
 
         headers = {
             "apikey": SUPABASE_KEY,
@@ -90,7 +92,7 @@ class SupabaseAPI:
             "query_embedding": [float(x) for x in embedding]
         }
 
-        r = requests.post(endpoint, headers=headers, data=json.dumps(payload))
+        r = requests.post(endpoint, headers=headers, data=json.dumps(payload)) #use requests to post data to supabase function
 
         data = r.json()
         return data
@@ -137,7 +139,7 @@ class SupabaseAPI:
     
 if __name__ == "__main__":
     db = SupabaseAPI()
-    
+
     
 
     
