@@ -1,3 +1,2 @@
-- Add publications column to Profinfo DB, edit Upload script accordingly
-- Scrape all Profs page for other website links
-- Add all to DBs
+- Expand SupabaseAPI file to inclde RAG Search
+- User embeddings
