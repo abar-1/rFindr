@@ -1,4 +1,4 @@
-from langchain.embeddings import HuggingFaceEmbeddings
+from langchain_huggingface import HuggingFaceEmbeddings
 import json
 
 embedding_model = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
@@ -16,3 +16,7 @@ def generate_Embedding(text: str) -> list[float]:
 def writeEmbeddingsToFile(embeddings: list[list[float]], file_path: str):
     with open(file_path, 'w') as f:
         json.dump(embeddings, f)
+
+test_text = "This is a sample text for generating embeddings."
+print(len(generate_Embedding(test_text)))
+
