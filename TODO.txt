@@ -1,3 +1,3 @@
 - User PDF Parsing
 - Upload User Embeddings
-- Using user_id and user embedding, edit(or not) RAG script to take userID input, find embedding, and then do RAG. Return to device
+- Using user_id and user embedding, edit(or not) RAG script to take userID input, find embedding, and then do RAG. Return to devices
