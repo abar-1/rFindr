@@ -11,4 +11,4 @@ custom_embedding = generate_Embedding(customUserBio)
 
 res = db.rag_Search(custom_embedding, match_count = 30)
 for record in res:
-    print(f"Professor Name: {record['name']}, Email: {record['email']}, Similarity Score: {record['similarity']}")
+    print(f"Professor Name:  {record['name']}, Email: {record['email']}, Similarity Score: {record['similarity']}")

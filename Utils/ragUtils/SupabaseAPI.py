@@ -66,7 +66,7 @@ class SupabaseAPI:
 
 # ============ Get Data From DB ============= #
     def rag_Search (self, embedding: list[float], match_count: int = 30) -> list[dict]:
-        resp = self.supabase.rpc("match_professor_embeddings", {"query_embedding": embedding, "match_count": match_count}).execute()
+        resp = self.supabase.rpc("match_professor_embeddings", {"query_embedding": embedding, "match_count": match_count}).select("*").execute()
         return resp.data
     
     def __get_Prof_Names(self) -> None:
@@ -78,7 +78,5 @@ class SupabaseAPI:
     
 if __name__ == "__main__":
     uploadProfs = SupabaseAPI()
-
-
 
     
