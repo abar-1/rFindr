@@ -12,14 +12,8 @@ class SupabaseAPI:
     def __init__(self):
         self.__setup_Supabase()
 
-    def __main__(self, case: int = 0):
-        if case == 1:
-            ud = SupabaseAPI()
-
-            url = "https://www.cs.purdue.edu/people/faculty/aliaga.html"
-            ud.upload_embedding(url)
-        else:
-            return "case = 0, set case = 1 to run example."
+    def __main__(self):
+        pass
     
 # ============ UPLOAD EMBEDDINGS TO DB ============= #
 # Uses Supabase client to upload info to the database
