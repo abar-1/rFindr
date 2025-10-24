@@ -1,6 +1,7 @@
 import os
 from supabase import create_client, Client
-from ragUtils import GenerateEmbeddings, ScrapeProfs, DocumentChunker
+import EmbGenerator as embGenerator
+import ScrapeProfs, DocumentChunker
 from dotenv import load_dotenv
 
 class SupabaseAPI:
@@ -26,7 +27,7 @@ class SupabaseAPI:
             raise ValueError("URL must be provided.")
         
         name, email, details = ScrapeProfs.get_professor_info(url)
-        embedding = GenerateEmbeddings.generate_Embedding(details)
+        embedding = embGenerator.generate_Embedding(details)
         print(f"Generated embedding for professor {name}.")
 
         if name in self.profNames:
@@ -64,18 +65,19 @@ class SupabaseAPI:
         self.supabase.table("professor_embeddings").insert({"professor_id": professor_id, "embedding": embedding, "chunk": chunk}).execute()
 
 # ============ Get Data From DB ============= #
+    def rag_Search (self, embedding: list[float], match_count: int = 30) -> list[dict]:
+        resp = self.supabase.rpc("match_professor_embeddings", {"query_embedding": embedding, "match_count": match_count}).execute()
+        return resp.data
+    
     def __get_Prof_Names(self) -> None:
         resp = self.supabase.table("professors").select("name").execute()
         self.profNames = [record["name"] for record in resp.data]
 
-    def rag_Search (self, embedding: list[float], match_count: int = 5) -> list[dict]:
-        resp = self.supabase.rpc("match_professor_embeddings", {"query_embedding": embedding, "match_count": match_count}).execute()
-        return resp.data
+
 
     
 if __name__ == "__main__":
     uploadProfs = SupabaseAPI()
-    uploadProfs.reset_prof_id_numeration()
 
 
 

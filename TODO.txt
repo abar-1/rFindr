@@ -1,2 +1,3 @@
-- Expand SupabaseAPI file to inclde RAG Search
-- User embeddings
+- User PDF Parsing
+- Frontend
+- LLM?
