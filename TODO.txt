@@ -1,3 +1,9 @@
 - User PDF Parsing
 - Upload User Embeddings
 - Using user_id and user embedding, edit(or not) RAG script to take userID input, find embedding, and then do RAG. Return to devices
+- User authentication
+
+Frontend:
+- Make login/sign pages
+- Add resume upload spot
+- Hookup frontend to SupabaseAPI script
