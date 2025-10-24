@@ -68,8 +68,7 @@ class SupabaseAPI:
         resp = self.supabase.table("professors").select("name").execute()
         self.profNames = [record["name"] for record in resp.data]
 
-    def rag_Search (self, query: str, match_count: int = 5) -> list[dict]:
-        embedding = GenerateEmbeddings.generate_Embedding(query)
+    def rag_Search (self, embedding: list[float], match_count: int = 5) -> list[dict]:
         resp = self.supabase.rpc("match_professor_embeddings", {"query_embedding": embedding, "match_count": match_count}).execute()
         return resp.data
 
