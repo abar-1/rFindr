@@ -3,6 +3,10 @@ from ragUtils import DocumentChunker, GenerateEmbeddings
 import supabase
 import json
 from supabase import create_client, Client
+import os
+
+DATABASE_URL = os.getenv("DATABASE_URL")
+SUPABASE_PUBLIC = os.getenv("SUPABASE_PUBLIC")
 
 VDB_API_URL = DATABASE_URL
 VDB_ANON_KEY = SUPABASE_PUBLIC
