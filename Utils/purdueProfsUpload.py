@@ -15,6 +15,6 @@ uploader = SupabaseAPI.SupabaseAPI()
 for i in range(startIndex, endIndex):
     try:
         print(f"Uploading professor {i+1}/{endIndex}: {links[i]}")
-        uploader.upload_embedding(links[i])
+        uploader.upload_prof_embedding(links[i])
     except Exception as e:
         print(f"Failed to upload professor at {links[i]}. Error: {e}")  

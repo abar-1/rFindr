@@ -18,7 +18,7 @@ class SupabaseAPI:
     
 # ============ UPLOAD EMBEDDINGS TO DB ============= #
 # Uses Supabase client to upload info to the database
-    def upload_embedding(self, url: str):
+    def upload_prof_embedding(self, url: str):
         self.__get_Prof_Names()
         if not url:
             raise ValueError("URL must be provided.")
@@ -33,7 +33,12 @@ class SupabaseAPI:
         prof_id = self.__upsert_professor(name=name, email=email, research_areas=details)
         self.__insert_professor_embedding(professor_id=prof_id, embedding=embedding, chunk=details)
         print(f"Successfully uploaded embeddings to VDB for prof: {name}.")
-
+        
+    def upload_user_embedding(self, user_id: int, user_bio: str):
+        embedding = embGenerator.generate_Embedding(user_bio)
+        print(f"Generated embedding for user ID {user_id}.")
+        self.__insert_user_enbedding(user_id=user_id, embedding=embedding)
+        print(f"Successfully uploaded user embedding to VDB for user ID: {user_id}.")
     
         
     def __setup_Supabase(self)-> None:
@@ -64,7 +69,7 @@ class SupabaseAPI:
     def __insert_user_enbedding(self, user_id: int, embedding: list[float]) -> None:
         self.supabase.table("user_embeddings").insert({"user_id": user_id, "embedding": 
         embedding}).execute()
-        
+
 # ============ Get Data From DB ============= #
 #Uses Request to call Supabase functions
     def rag_Search(self, embedding: list[float], match_count: int = 5) -> list[dict]:
