@@ -1,7 +1,8 @@
 import os
 from supabase import create_client, Client
-import EmbGenerator as embGenerator
-import ScrapeProfs, DocumentChunker
+import ragUtils.EmbGenerator as embGenerator
+import ragUtils.ScrapeProfs as ScrapeProfs
+import ragUtils.DocumentChunker as DocumentChunker
 from dotenv import load_dotenv
 import os, json, requests
 
@@ -60,6 +61,10 @@ class SupabaseAPI:
     def __insert_professor_embedding(self, professor_id: int, embedding: list[float], chunk: str) -> None:
         self.supabase.table("professor_embeddings").insert({"professor_id": professor_id, "embedding": embedding, "chunk": chunk}).execute()
 
+    def __insert_user_enbedding(self, user_id: int, embedding: list[float]) -> None:
+        self.supabase.table("user_embeddings").insert({"user_id": user_id, "embedding": 
+        embedding}).execute()
+        
 # ============ Get Data From DB ============= #
 #Uses Request to call Supabase functions
     def rag_Search(self, embedding: list[float], match_count: int = 5) -> list[dict]:

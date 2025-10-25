@@ -1,4 +1,4 @@
-import Utils.ragUtils.SupabaseAPI as SupabaseAPI
+import Utils.SupabaseAPI as SupabaseAPI
 
 links = []
 with open("Utils/data/profLinks.txt", "r") as f:
