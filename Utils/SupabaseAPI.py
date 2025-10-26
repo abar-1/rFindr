@@ -71,7 +71,7 @@ class SupabaseAPI:
         embedding}).execute()
 
 # ============ Get Data From DB ============= #
-#Uses Request to call Supabase functions
+# Uses Request to call Supabase functions
     def rag_Search(self, embedding: list[float], match_count: int = 5) -> list[dict]:
         results = self.__get_DB_Vectors(embedding)
         if len(results) < match_count:

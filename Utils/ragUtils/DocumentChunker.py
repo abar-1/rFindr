@@ -19,7 +19,7 @@ class DocumentChunker:
         chunks = []
         for doc in document_paths:
             if doc.lower().endswith('.pdf'):
-                text = self._getTextFromPDF(doc)
+                text = self.__getTextFromPDF(doc)
             else:
                 with open(doc, 'r', encoding='utf-8') as file:
                     text = file.read()
@@ -30,7 +30,7 @@ class DocumentChunker:
         chunks = []
         for doc in document_paths:
             if doc.lower().endswith('.pdf'):
-                text = self._getTextFromPDF(doc)
+                text = self.__getTextFromPDF(doc)
             else:
                 with open(doc, 'r', encoding='utf-8') as file:
                     text = file.read()
@@ -53,7 +53,7 @@ class DocumentChunker:
 
         return chunks
     
-    def _getTextFromPDF(self, pdf_path):
+    def __getTextFromPDF(self, pdf_path):
         text = ""
         with open(pdf_path, "rb") as file:
             reader = PyPDF2.PdfReader(file)
