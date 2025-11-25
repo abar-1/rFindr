@@ -1,9 +1,10 @@
 import os
 from supabase import create_client, Client
-import ragUtils.EmbGenerator as embGenerator
-import ragUtils.ScrapeProfs as ScrapeProfs
-import ragUtils.DocumentChunker as DocumentChunker
+from Utils.ragUtils import EmbGenerator
+from Utils.ragUtils import ScrapeProfs
+from Utils.ragUtils import DocumentChunker
 from dotenv import load_dotenv
+from typing import Optional
 import os, json, requests
 
 class SupabaseAPI:
@@ -24,7 +25,7 @@ class SupabaseAPI:
             raise ValueError("URL must be provided.")
         
         name, email, details = ScrapeProfs.get_professor_info(url)
-        embedding = embGenerator.generate_Embedding(details)
+        embedding = EmbGenerator.generate_Embedding(details)
         print(f"Generated embedding for professor {name}.")
 
         if name in self.profNames:
@@ -35,7 +36,7 @@ class SupabaseAPI:
         print(f"Successfully uploaded embeddings to VDB for prof: {name}.")
         
     def upload_user_embedding(self, user_id: int, user_bio: str):
-        embedding = embGenerator.generate_Embedding(user_bio)
+        embedding = EmbGenerator.generate_Embedding(user_bio)
         print(f"Generated embedding for user ID {user_id}.")
         self.__insert_user_enbedding(user_id=user_id, embedding=embedding)
         print(f"Successfully uploaded user embedding to VDB for user ID: {user_id}.")
@@ -53,7 +54,7 @@ class SupabaseAPI:
         docChunker = DocumentChunker.DocumentChunker(chunk_token_size=500, overlap=100)
 
 
-    def __upsert_professor(self, name: str, email: str, department: str | None = None, research_areas: str | None = None) -> int:
+    def __upsert_professor(self, name: str, email: str, department: Optional[str], research_areas: Optional[str]) -> int:
         payload = {"name": name, "email": email}
         if department is not None:
             payload["department"] = department
@@ -93,7 +94,7 @@ class SupabaseAPI:
         }
 
         payload = {
-            "query_embedding": [float(x) for x in embedding]
+            "user_embedding": [float(x) for x in embedding]
         }
 
         r = requests.post(endpoint, headers=headers, data=json.dumps(payload)) #use requests to post data to supabase function
