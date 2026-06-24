@@ -1,6 +1,11 @@
+"use client";
+
 import React from "react";
+import { useAuth } from "../contexts/AuthContext";
 
 const Navbar: React.FC = () => {
+  const { user, loading, logout } = useAuth();
+
   return (
     // Updated container:
     // - backdrop-blur-md: Stronger blur effect
@@ -35,13 +40,28 @@ const Navbar: React.FC = () => {
           >
             About
           </a>
-          {/* Example of adding a prominent CTA button */}
-          <a 
-            href="#" 
-            className="font-semibold text-white bg-indigo-600 px-4 py-1.5 rounded-lg hover:bg-indigo-700 transition duration-300 shadow-md"
-          >
-            Get Started
-          </a>
+          {/* Auth-aware CTA: greeting + Logout when signed in, otherwise Get Started */}
+          {loading ? null : user ? (
+            <div className="flex items-center space-x-4">
+              <span className="font-medium text-gray-700">
+                Hi, {user.name ?? user.email}
+              </span>
+              <button
+                type="button"
+                onClick={() => logout()}
+                className="font-semibold text-white bg-indigo-600 px-4 py-1.5 rounded-lg hover:bg-indigo-700 transition duration-300 shadow-md"
+              >
+                Log out
+              </button>
+            </div>
+          ) : (
+            <a
+              href="#"
+              className="font-semibold text-white bg-indigo-600 px-4 py-1.5 rounded-lg hover:bg-indigo-700 transition duration-300 shadow-md"
+            >
+              Get Started
+            </a>
+          )}
         </div>
       </div>
     </nav>

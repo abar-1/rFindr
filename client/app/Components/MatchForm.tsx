@@ -18,13 +18,13 @@ const MatchForm = () => {
     try {
         const res = await fetch(`${API_URL}/api/matches`, {
           method: "POST",
+          credentials: "include", // send the httpOnly auth cookie
           headers: {
             "Content-Type": "application/json",
           },
-          // Backend expects { interests: string, userID: int, num_matches: number }
+          // Backend reads the user id from the auth cookie; body is { interests, num_matches }.
           body: JSON.stringify({
             interests: interests,
-            user_id: 67,
             num_matches: numMatches,
           }),
         });

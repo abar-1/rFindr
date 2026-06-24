@@ -1,9 +1,9 @@
-from fastapi import FastAPI, APIRouter, HTTPException
+from fastapi import FastAPI, APIRouter, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from db.SupabaseAPI import SupabaseAPI
 from services.embeddingService import generate_Embedding
-from api.authController import router as auth_router
+from api.authController import router as auth_router, get_current_user
 
 
 app = FastAPI()
@@ -24,16 +24,16 @@ app.include_router(auth_router, prefix="/api")
 
 class MatchRequest(BaseModel):
     interests: str
-    user_id: int
     num_matches: int
 
 @app.post("/api/matches")
-async def get_professor_matches(request: MatchRequest):
+async def get_professor_matches(request: MatchRequest, current_user: dict = Depends(get_current_user)):
     try:
-        print("Received match request:", request)
+        user_id = current_user["id"]
+        print(f"Received match request from user {user_id}:", request)
 
-        # Generate embedding for the user's interests if it doesn't exist
-        #add logic to check if user after adding user auth, for now assume user doesn't have existing embedding
+        # Identity comes from the auth cookie (current_user), not the request body,
+        # so a client can't request matches on behalf of another user.
         print("Embedding generating...")
         embedding = generate_Embedding(request.interests)
 
