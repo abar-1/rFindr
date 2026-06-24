@@ -20,7 +20,7 @@ export default function MatchResults() {
                                     <p className="text-gray-600 mb-1"><span className="font-medium">Department:</span> {professor.department}</p>
                                 )}
                                 <p className="text-gray-600 mb-1"><span className="font-medium">Email:</span> {professor.email}</p>
-                                <p className="text-gray-600"><span className="font-medium">Similarity Score:</span> {((professor.similarity + 1) / 2 * 100).toFixed(2)}%</p>
+                                <p className="text-gray-600"><span className="font-medium">Similarity Score:</span> {(professor.similarity * 100).toFixed(2)}%</p>
                             </li>
                         ))}
                     </ul>

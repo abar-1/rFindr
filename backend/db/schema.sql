@@ -58,10 +58,29 @@ CREATE TABLE IF NOT EXISTS chat_logs (
     user_id INTEGER NOT NULL REFERENCES users (id) ON DELETE CASCADE,
     query VARCHAR NOT NULL,
     timestamp TIMESTAMP WITHOUT TIME ZONE DEFAULT (NOW() AT TIME ZONE 'utc'),
-    matched_professors INTEGER[]
+    -- Full match objects ({name, email, similarity}) as returned to the user.
+    -- JSONB (not INTEGER[]) because top_professor_matches returns no professor id.
+    matched_professors JSONB
 );
 
 CREATE INDEX IF NOT EXISTS ix_chat_logs_user_id ON chat_logs (user_id);
+
+-- Upgrade legacy chat_logs.matched_professors from INTEGER[] to JSONB.
+DO $$
+BEGIN
+    IF EXISTS (
+        SELECT 1
+        FROM information_schema.columns
+        WHERE table_schema = 'public'
+          AND table_name = 'chat_logs'
+          AND column_name = 'matched_professors'
+          AND data_type <> 'jsonb'
+    ) THEN
+        ALTER TABLE chat_logs
+            ALTER COLUMN matched_professors TYPE JSONB
+            USING to_jsonb(matched_professors);
+    END IF;
+END $$;
 
 -- Upgrade legacy tables created without pgvector / chunk column
 DO $$

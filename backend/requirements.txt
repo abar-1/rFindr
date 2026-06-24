@@ -20,3 +20,6 @@ PyPDF2
 # Embeddings
 langchain-huggingface
 sentence-transformers
+
+# LLM / RAG
+langchain-ollama

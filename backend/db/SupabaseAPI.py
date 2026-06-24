@@ -18,6 +18,7 @@ class SupabaseAPI:
     def __main__(self):
         pass
     
+
 # ============ UPLOAD EMBEDDINGS TO DB ============= #
 # Uses Supabase client to upload info to the database
     def upload_prof_embedding(self, url: str):
@@ -43,6 +44,25 @@ class SupabaseAPI:
         print(f"Generated embedding for user ID {user_id}.")
         self.__insert_user_enbedding(user_id=user_id, embedding=embedding)
         print(f"Successfully uploaded user embedding to VDB for user ID: {user_id}.")
+
+#============= CHAT LOGS ============= #
+    def insert_chat(self, user_id: int, query: str, matches: list[dict]) -> dict:
+        """Persist one match query and its results to chat_logs.
+
+        ``query`` -> chat_logs.query, ``matches`` -> chat_logs.matched_professors (JSONB).
+        Returns the inserted row; raises on failure so the caller can surface a 500.
+        """
+        payload = {
+            "user_id": user_id,
+            "prompt": query,
+            "matched_professors": matches or [],
+        }
+        resp = self.supabase.table("chat_logs").insert(payload).execute()
+        if not resp.data:
+            raise RuntimeError("chat_logs insert returned no row.")
+        return resp.data[0]
+        
+        
         
 # ============ USER ACCOUNTS ============= #
     def create_user(self, name: str, email: str, password_hash: str,

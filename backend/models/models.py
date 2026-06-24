@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Float
-from sqlalchemy.dialects.postgresql import ARRAY
+from sqlalchemy.dialects.postgresql import ARRAY, JSONB
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from db.database import Base
@@ -66,5 +66,5 @@ class ChatLog(Base):
     user_id = Column(Integer, ForeignKey("users.id"))
     query = Column(String, nullable=False)
     timestamp = Column(DateTime, default=datetime.utcnow)
-    matched_professors = Column(ARRAY(Integer))  # store matched professor IDs
+    matched_professors = Column(JSONB)  # full match objects: {name, email, similarity}
     user = relationship("User", back_populates="chatlogs")

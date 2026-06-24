@@ -1,3 +1,4 @@
+from typing import Optional
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_core.prompts import PromptTemplate
 from langchain_ollama.chat_models import ChatOllama
@@ -10,7 +11,7 @@ class LLMRAG:
     llm: ChatOllama
     chunks: list[str]
 
-    def __init__(self, user_id: int | None, user_embedding: list[float], match_count: int):
+    def __init__(self, user_id: Optional[int], user_embedding: list[float], match_count: int):
         self.db = SupabaseAPI()
         self.__load_model()
         self.__load_user_context(user_id, user_embedding, match_count)
@@ -45,7 +46,7 @@ class LLMRAG:
         return response.content
     
 # =========== Helper METHODS =============
-    def __load_user_context(self, user_id: int | None, user_embedding: list[float], match_count: int) -> None:
+    def __load_user_context(self, user_id: Optional[int], user_embedding: list[float], match_count: int) -> None:
 
        #Change this to handle user_id being None
         if user_id is not None:
