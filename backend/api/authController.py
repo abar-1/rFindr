@@ -30,6 +30,9 @@ db = SupabaseAPI()
 COOKIE_NAME = "access_token"
 # In production (HTTPS) set COOKIE_SECURE=true so the cookie is only sent over TLS.
 COOKIE_SECURE = os.getenv("COOKIE_SECURE", "false").lower() == "true"
+# "lax" works when frontend and backend are same-site (e.g. both on localhost in dev).
+# Set COOKIE_SAMESITE=none for a cross-site prod setup (requires COOKIE_SECURE=true).
+COOKIE_SAMESITE = os.getenv("COOKIE_SAMESITE", "lax").lower()
 
 PUBLIC_USER_FIELDS = ("id", "name", "email", "research_interests", "major", "created_at", "updated_at")
 
@@ -58,7 +61,7 @@ def _set_auth_cookie(response: Response, token: str) -> None:
         value=token,
         httponly=True,
         secure=COOKIE_SECURE,
-        samesite="lax",
+        samesite=COOKIE_SAMESITE,
         max_age=ACCESS_TOKEN_EXPIRE_MINUTES * 60,
         path="/",
     )
