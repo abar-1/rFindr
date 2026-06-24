@@ -44,6 +44,34 @@ class SupabaseAPI:
         self.__insert_user_enbedding(user_id=user_id, embedding=embedding)
         print(f"Successfully uploaded user embedding to VDB for user ID: {user_id}.")
         
+# ============ USER ACCOUNTS ============= #
+    def create_user(self, name: str, email: str, password_hash: str,
+                    research_interests: Optional[str] = None,
+                    major: Optional[str] = None) -> dict:
+        payload = {"name": name, "email": email, "password_hash": password_hash}
+        if research_interests is not None:
+            payload["research_interests"] = research_interests
+        if major is not None:
+            payload["major"] = major
+        resp = self.supabase.table("users").insert(payload).execute()
+        return resp.data[0]
+
+    def get_user_by_email(self, email: str) -> Optional[dict]:
+        # Includes password_hash so callers can verify a login.
+        resp = self.supabase.table("users").select("*").eq("email", email).limit(1).execute()
+        return resp.data[0] if resp.data else None
+
+    def get_user_by_id(self, user_id: int) -> Optional[dict]:
+        # Excludes password_hash; safe to surface to clients.
+        resp = (
+            self.supabase.table("users")
+            .select("id, name, email, research_interests, major, created_at, updated_at")
+            .eq("id", user_id)
+            .limit(1)
+            .execute()
+        )
+        return resp.data[0] if resp.data else None
+
     def __setup_Supabase(self) -> None:
         load_dotenv()
         SUPABASE_URL = os.getenv("DATABASE_URL")

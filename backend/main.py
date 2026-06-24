@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from db.SupabaseAPI import SupabaseAPI
 from services.embeddingService import generate_Embedding
+from api.authController import router as auth_router
 
 
 app = FastAPI()
@@ -17,6 +18,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Auth routes: /api/auth/signup, /api/auth/login, /api/auth/logout, /api/auth/me
+app.include_router(auth_router, prefix="/api")
 
 class MatchRequest(BaseModel):
     interests: str

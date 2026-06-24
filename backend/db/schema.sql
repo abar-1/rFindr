@@ -6,11 +6,15 @@ CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
     name VARCHAR,
     email VARCHAR UNIQUE,
+    password_hash VARCHAR,
     research_interests VARCHAR,
     major VARCHAR,
     created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT (NOW() AT TIME ZONE 'utc'),
     updated_at TIMESTAMP WITHOUT TIME ZONE DEFAULT (NOW() AT TIME ZONE 'utc')
 );
+
+-- Ensure auth column exists on pre-existing users tables.
+ALTER TABLE users ADD COLUMN IF NOT EXISTS password_hash VARCHAR;
 
 CREATE INDEX IF NOT EXISTS ix_users_name ON users (name);
 CREATE INDEX IF NOT EXISTS ix_users_email ON users (email);

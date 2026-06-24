@@ -1,7 +1,22 @@
+# Web API
+fastapi
+uvicorn[standard]
+
+# Auth
+bcrypt
+PyJWT
+
+# Database / Supabase
 supabase
-PyPDF2
+sqlalchemy
+psycopg2-binary
 python-dotenv
+
+# Scraping / seeding
 requests
 beautifulsoup4
+PyPDF2
+
+# Embeddings
 langchain-huggingface
 sentence-transformers

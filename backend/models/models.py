@@ -11,6 +11,7 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, index=True)
     email = Column(String, unique=True, index=True)
+    password_hash = Column(String)
     research_interests = Column(String, index=True)
     major = Column(String, index=True)
     created_at = Column(DateTime, default=datetime.utcnow)
