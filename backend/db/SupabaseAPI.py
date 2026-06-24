@@ -2,7 +2,7 @@ import os
 from supabase import create_client, Client
 import services.embeddingService as embeddingService
 from services.embeddingService import generate_Embedding
-from services.ScrapeProfs import scrape_professor_page
+from services.ScrapeProfs import scrape_professor_page, get_professor_info
 from services.docChunkerService import DocumentChunker
 from dotenv import load_dotenv
 from typing import Optional
@@ -25,7 +25,9 @@ class SupabaseAPI:
         if not url:
             raise ValueError("URL must be provided.")
         
-        name, email, details = scrape_professor_page(url)
+        name, email, details = get_professor_info(url)
+        # get_professor_info may return several emails joined by "; "; keep the first usable one.
+        email = email.split(";")[0].strip() if email and email != "N/A" else None
         embedding = embeddingService.generate_Embedding(details)
         print(f"Generated embedding for professor {name}.")
 
@@ -41,7 +43,6 @@ class SupabaseAPI:
         print(f"Generated embedding for user ID {user_id}.")
         self.__insert_user_enbedding(user_id=user_id, embedding=embedding)
         print(f"Successfully uploaded user embedding to VDB for user ID: {user_id}.")
-    
         
     def __setup_Supabase(self) -> None:
         load_dotenv()
@@ -55,15 +56,23 @@ class SupabaseAPI:
         docChunker = DocumentChunker(chunk_token_size=500, overlap=100)
 
 
-    def __upsert_professor(self, name: str, email: str, department: Optional[str], research_areas: Optional[str]) -> int:
-        payload = {"name": name, "email": email}
+    def __upsert_professor(self, name: str, email: Optional[str] = None, research_areas: Optional[str] = None, department: Optional[str] = None) -> int:
+        payload = {"name": name}
         if department is not None:
             payload["department"] = department
         if research_areas is not None:
             payload["research_areas"] = research_areas
-        self.supabase.table("professors").upsert(payload, on_conflict="email").execute()
-        resp = self.supabase.table("professors").select("id").eq("email", email).single().execute()
-        return resp.data["id"]
+
+        # Only dedupe on email when we actually have one; the column is UNIQUE and
+        # the .single() lookup below breaks if many rows share a placeholder email.
+        if email:
+            payload["email"] = email
+            self.supabase.table("professors").upsert(payload, on_conflict="email").execute()
+            resp = self.supabase.table("professors").select("id").eq("email", email).single().execute()
+            return resp.data["id"]
+
+        resp = self.supabase.table("professors").insert(payload).execute()
+        return resp.data[0]["id"]
 
     def __insert_professor_embedding(self, professor_id: int, embedding: list[float], chunk: str) -> None:
         self.supabase.table("professor_embeddings").insert({"professor_id": professor_id, "embedding": embedding, "chunk": chunk}).execute()
@@ -108,23 +117,6 @@ class SupabaseAPI:
         key = os.getenv("SUPABASE_PUBLIC")
         r = requests.post(
             f"{url}/rest/v1/rpc/debug_count_embeddings",
-            headers={
-                "apikey": key,
-                "Authorization": f"Bearer {key}",
-                "Content-Type": "application/json",
-                "Accept": "application/json",
-            },
-            data=json.dumps({})  # no args
-        )
-
-        print("status", r.status_code)
-        print("body", r.text)
-
-    def __debug_get_DB_Role(self) -> str:
-        url = os.getenv("DATABASE_URL")  
-        key = os.getenv("SUPABASE_PUBLIC")
-        r = requests.post(
-            f"{url}/rest/v1/rpc/debug_whoami",
             headers={
                 "apikey": key,
                 "Authorization": f"Bearer {key}",

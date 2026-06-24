@@ -1,7 +1,13 @@
+import os
+
 from db.SupabaseAPI import SupabaseAPI
 
+# Resolve the data file relative to the backend dir so this runs from any cwd.
+BACKEND_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+LINKS_PATH = os.path.join(BACKEND_DIR, "data", "profLinks.txt")
+
 links = []
-with open("data/profLinks.txt", "r") as f:
+with open(LINKS_PATH, "r") as f:
     links_without_newlines = f.read().splitlines()
     links.extend(links_without_newlines)
     print(f"Loaded {len(links)} professor links.")

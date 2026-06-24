@@ -1,0 +1,7 @@
+supabase
+PyPDF2
+python-dotenv
+requests
+beautifulsoup4
+langchain-huggingface
+sentence-transformers
