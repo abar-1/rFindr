@@ -1,8 +1,9 @@
 from fastapi import FastAPI, APIRouter, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from Utils.SupabaseAPI import SupabaseAPI
-from Utils.ragUtils import EmbGenerator
+from db.SupabaseAPI import SupabaseAPI
+from services.embeddingService import generate_Embedding
+
 
 app = FastAPI()
 router = APIRouter()
@@ -30,7 +31,7 @@ async def get_professor_matches(request: MatchRequest):
         # Generate embedding for the user's interests if it doesn't exist
         #add logic to check if user after adding user auth, for now assume user doesn't have existing embedding
         print("Embedding generating...")
-        embedding = EmbGenerator.generate_Embedding(request.interests)
+        embedding = generate_Embedding(request.interests)
 
         # Query Supabase for top professor matches
         matches = db.rag_Search(embedding, request.num_matches) or []

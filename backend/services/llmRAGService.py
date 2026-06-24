@@ -1,17 +1,17 @@
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_core.prompts import PromptTemplate
 from langchain_ollama.chat_models import ChatOllama
-from ragUtils import SupabaseAPI as sb
+from db.SupabaseAPI import SupabaseAPI
 
 #Might have to edit to utilize static method instead of instance method, i.e, Convert to "Conversatin" class, where you quety llm with just a user object. Would also need to create user object.
 
 class LLMRAG:
-    db: sb.SupabaseAPI
+    db: SupabaseAPI
     llm: ChatOllama
     chunks: list[str]
 
     def __init__(self, user_id: int | None, user_embedding: list[float], match_count: int):
-        self.db = sb.SupabaseAPI()
+        self.db = SupabaseAPI()
         self.__load_model()
         self.__load_user_context(user_id, user_embedding, match_count)
 

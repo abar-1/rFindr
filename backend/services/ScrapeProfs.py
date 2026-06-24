@@ -1,4 +1,3 @@
-
 import argparse
 import csv
 import json
@@ -10,6 +9,8 @@ from urllib.parse import urljoin, urlparse
 
 import requests
 from bs4 import BeautifulSoup, NavigableString, Tag
+
+from db import SupabaseAPI
 
 EMAIL_REGEX = re.compile(r"([a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,})")
 WS_RE = re.compile(r"\s+")
@@ -310,13 +311,15 @@ def main():
     if not urls:
         print("Provide --url or --url-file.", file=sys.stderr)
         sys.exit(2)
-
+    uploader = SupabaseAPI()
     records: List[ProfessorRecord] = []
     for u in urls:
         try:
             rec = scrape_professor_page(u)
             records.append(rec)
+            uploader.upload_prof_embedding(rec)
             print(f"[ok] {u}")
+
         except Exception as e:
             print(f"[error] {u} -> {e}", file=sys.stderr)
 

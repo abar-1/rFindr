@@ -1,8 +1,9 @@
 import os
 from supabase import create_client, Client
-from Utils.ragUtils import EmbGenerator
-from Utils.ragUtils import ScrapeProfs
-from Utils.ragUtils import DocumentChunker
+import services.embeddingService as embeddingService
+from services.embeddingService import generate_Embedding
+from services.ScrapeProfs import scrape_professor_page
+from services.docChunkerService import DocumentChunker
 from dotenv import load_dotenv
 from typing import Optional
 import os, json, requests
@@ -24,8 +25,8 @@ class SupabaseAPI:
         if not url:
             raise ValueError("URL must be provided.")
         
-        name, email, details = ScrapeProfs.get_professor_info(url)
-        embedding = EmbGenerator.generate_Embedding(details)
+        name, email, details = scrape_professor_page(url)
+        embedding = embeddingService.generate_Embedding(details)
         print(f"Generated embedding for professor {name}.")
 
         if name in self.profNames:
@@ -36,13 +37,13 @@ class SupabaseAPI:
         print(f"Successfully uploaded embeddings to VDB for prof: {name}.")
         
     def upload_user_embedding(self, user_id: int, user_bio: str):
-        embedding = EmbGenerator.generate_Embedding(user_bio)
+        embedding = embeddingService.generate_Embedding(user_bio)
         print(f"Generated embedding for user ID {user_id}.")
         self.__insert_user_enbedding(user_id=user_id, embedding=embedding)
         print(f"Successfully uploaded user embedding to VDB for user ID: {user_id}.")
     
         
-    def __setup_Supabase(self)-> None:
+    def __setup_Supabase(self) -> None:
         load_dotenv()
         SUPABASE_URL = os.getenv("DATABASE_URL")
         SUPABASE_ANON_KEY = os.getenv("SUPABASE_PUBLIC")
@@ -51,7 +52,7 @@ class SupabaseAPI:
             raise RuntimeError("Set SUPABASE_URL and SUPABASE_ANON_KEY in your environment.")
         
         self.supabase: Client = create_client(SUPABASE_URL, SUPABASE_ANON_KEY)
-        docChunker = DocumentChunker.DocumentChunker(chunk_token_size=500, overlap=100)
+        docChunker = DocumentChunker(chunk_token_size=500, overlap=100)
 
 
     def __upsert_professor(self, name: str, email: str, department: Optional[str], research_areas: Optional[str]) -> int:

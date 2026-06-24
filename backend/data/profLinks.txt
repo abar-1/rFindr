@@ -22,7 +22,6 @@ https://www.cs.purdue.edu/people/faculty/bbullins.html
 https://www.cs.purdue.edu/people/faculty/joecamp.html
 https://www.cs.purdue.edu/people/faculty/zcelik.html
 https://www.cs.purdue.edu/people/faculty/gchopra.html
-https://www.cs.purdue.edu/people/faculty/chowdh11.html
 https://www.cs.purdue.edu/people/faculty/chowdh23.html
 https://www.cs.purdue.edu/people/faculty/fcifuen.html
 https://www.cs.purdue.edu/people/faculty/clifton.html

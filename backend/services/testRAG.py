@@ -1,5 +1,5 @@
-import Utils.SupabaseAPI as SupabaseAPI
-from EmbGenerator import generate_Embedding
+from db.SupabaseAPI import SupabaseAPI
+from embeddingService import generate_Embedding
 
 db = SupabaseAPI.SupabaseAPI()
 

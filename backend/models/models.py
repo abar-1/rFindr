@@ -2,7 +2,7 @@ from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Float
 from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.orm import relationship
 from datetime import datetime
-from backend.src.db.database import Base
+from db.database import Base
 
 # ---------- USER MODEL ----------
 class User(Base):
@@ -24,7 +24,8 @@ class User(Base):
 class UserEmbedding(Base):
     __tablename__ = "user_embeddings"
 
-    user_id = Column(Integer, ForeignKey("users.id"))
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
     embedding = Column(ARRAY(Float), nullable=False)
 
     user = relationship("User", back_populates="embeddings")
@@ -48,8 +49,10 @@ class Professor(Base):
 class ProfessorEmbedding(Base):
     __tablename__ = "professor_embeddings"
 
-    professor_id = Column(Integer, ForeignKey("professors.id"))
+    id = Column(Integer, primary_key=True, index=True)
+    professor_id = Column(Integer, ForeignKey("professors.id"), nullable=False, index=True)
     embedding = Column(ARRAY(Float), nullable=False)
+    chunk = Column(String)
 
     professor = relationship("Professor", back_populates="embeddings")
 
