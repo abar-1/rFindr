@@ -12,6 +12,10 @@ from db.SupabaseAPI import SupabaseAPI
 router = APIRouter(prefix="/rag", tags=["rag"])
 db = SupabaseAPI()
 
+# Keep in sync with MIN_INTERESTS_LENGTH in client/app/Components/MatchForm.tsx.
+# Rejects junk/empty prompts before they cost an embedding + vector search.
+MIN_INTERESTS_LENGTH = 30
+
 class MatchRequest(BaseModel):
     interests: str
     num_matches: int
@@ -24,8 +28,15 @@ class ChatRequest(BaseModel):
 def get_matches(request: MatchRequest, current_user: dict = Depends(get_current_user)):
     try:
         user_id = current_user["id"]
-        
-        embedding = generate_Embedding(request.interests)
+
+        interests = request.interests.strip()
+        if len(interests) < MIN_INTERESTS_LENGTH:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"interests must be at least {MIN_INTERESTS_LENGTH} characters.",
+            )
+
+        embedding = generate_Embedding(interests)
         
         #validation check 
         if not embedding:
