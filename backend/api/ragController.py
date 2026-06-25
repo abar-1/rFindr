@@ -79,3 +79,17 @@ def save_chat_log(request: ChatRequest, current_user: dict = Depends(get_current
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to save chat log.",
         )
+@router.get("/chats", status_code=status.HTTP_200_OK)
+def get_chats(current_user: dict = Depends(get_current_user)):
+    try:
+        user_id = current_user["id"]
+
+        chats = db.get_chats_by_user(user_id)
+        return chats
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Server failed to get chat logs"
+        )

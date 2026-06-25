@@ -61,7 +61,17 @@ class SupabaseAPI:
         if not resp.data:
             raise RuntimeError("chat_logs insert returned no row.")
         return resp.data[0]
-        
+
+    def get_chats_by_user(self, user_id: int) -> list[dict]:
+        """Return every chat_logs row belonging to ``user_id``, newest first."""
+        resp = (
+            self.supabase.table("chat_logs")
+            .select("*")
+            .eq("user_id", user_id)
+            .order("timestamp", desc=True)
+            .execute()
+        )
+        return resp.data or []
         
         
 # ============ USER ACCOUNTS ============= #
